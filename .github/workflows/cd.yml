@@ -18,9 +18,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /ubuntu/buy-me-pencils
+            cd home/ubuntu/buy-me-pencils
 
             git pull origin main
 
-            docker compose down
             docker compose up -d --build
