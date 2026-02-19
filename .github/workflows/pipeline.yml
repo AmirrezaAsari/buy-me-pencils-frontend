@@ -53,4 +53,5 @@ jobs:
             git clean -fd
 
             # Rebuild frontend container
-            docker compose up -d --build frontend
+              docker-compose build frontend
+              docker-compose up -d frontend
