@@ -11,7 +11,7 @@ function getApiBaseUrl(): string {
     return `${protocol}//${hostname}:3002`;
   }
   // SSR: use env or default
-  return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002';
+  return process.env.NEXT_PUBLIC_API_URL || 'http://buymeapencil.ir/api';
 }
 
 export interface PayResponse {
