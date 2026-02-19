@@ -1,0 +1,49 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_API_URL=http://localhost:3002 \
+            -t frontend-ci .
+
+      - name: Verify container runs
+        run: docker run --rm frontend-ci node -v
+
+  deploy:
+    needs: build 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            cd /home/ubuntu/buy-me-pencils
+
+            cd frontend
+            git pull origin master
+            cd ..
+
+            cd backend
+            git pull origin master
+            cd ..
+
+            docker compose up -d --build
