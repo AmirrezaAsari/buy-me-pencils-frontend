@@ -43,9 +43,18 @@ jobs:
             # Frontend
             cd frontend
             git fetch origin
-            git checkout master || git checkout -b master origin/master
             git reset --hard origin/master
+            git clean -fd
+
+            # Backend
+            cd ../backend
+            git fetch origin
+            git reset --hard origin/master
+            git clean -fd
+
+            # Rebuild containers
             cd ..
+            docker compose up -d --build
 
             # Backend
             cd backend
