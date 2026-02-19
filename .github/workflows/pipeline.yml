@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Frontend CI/CD
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout frontend repo
         uses: actions/checkout@v3
 
       - name: Build Docker image
@@ -23,11 +23,11 @@ jobs:
         run: docker run --rm frontend-ci node -v
 
   deploy:
-    needs: build 
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
+      - name: Deploy frontend via SSH
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -37,34 +37,20 @@ jobs:
           script: |
             set -e
 
-            # Go to project folder
-            cd /home/ubuntu/buy-me-pencils
+            # Go to frontend folder
+            cd /home/ubuntu/buy-me-pencils/frontend
 
-            # Frontend
-            cd frontend
-            git fetch origin
+            # If the folder doesn't exist, clone it fresh
+            if [ ! -d ".git" ]; then
+              rm -rf /home/ubuntu/buy-me-pencils/frontend
+              git clone https://github.com/AmirrezaAsari/buy-me-pencils-frontend.git frontend
+              cd frontend
+            fi
+
+            # Make sure local branch matches remote
+            git fetch --all
             git reset --hard origin/master
             git clean -fd
 
-            # Backend
-            cd ../backend
-            git fetch origin
-            git reset --hard origin/master
-            git clean -fd
-
-            # Rebuild containers
-            cd ..
-            docker compose up -d --build
-
-            # Backend
-            cd backend
-            git fetch origin
-            git checkout master || git checkout -b master origin/master
-            git reset --hard origin/master
-            cd ..
-
-            # Rebuild all containers
-            docker compose up -d --build
-
-            # Optional: clean dangling images
-            docker image prune -af
+            # Rebuild frontend container
+            docker compose up -d --build frontend
