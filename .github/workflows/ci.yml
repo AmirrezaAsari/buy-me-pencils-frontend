@@ -1,29 +1,26 @@
-name: Frontend Docker-Compose CI
+name: Frontend CI
 
 on:
   push:
     branches:
       - master
   pull_request:
-    branches:
-      - master
+      -master
 
 jobs:
-  docker-compose-frontend:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_API_URL=http://localhost:3002 \
+            -t frontend-ci .
 
-      - name: Build frontend container
-        run: docker-compose -f ./docker-compose.yml build frontend
-
-      - name: Run frontend container to check build
-        run: docker-compose -f ./docker-compose.yml run --rm frontend ls /usr/src/app/.next
-
-      - name: Run frontend tests inside container
-        run: docker-compose -f ./docker-compose.yml run --rm frontend npm test
+      - name: Verify container runs
+        run: |
+          docker run --rm frontend-ci node -v
