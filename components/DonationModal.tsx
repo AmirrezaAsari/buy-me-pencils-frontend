@@ -91,6 +91,7 @@ export default function DonationModal({
                 className="input-rich-xl w-full text-[#1a1a1a] placeholder:text-[#9ca3af] focus:outline-none"
               />
             </div>
+            
             <div>
               <label htmlFor="message" className="sr-only">
                 Message
