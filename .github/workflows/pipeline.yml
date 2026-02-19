@@ -33,17 +33,29 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
           script: |
             set -e
 
+            # Go to project folder
             cd /home/ubuntu/buy-me-pencils
 
+            # Frontend
             cd frontend
-            git pull origin master
+            git fetch origin
+            git checkout master || git checkout -b master origin/master
+            git reset --hard origin/master
             cd ..
 
+            # Backend
             cd backend
-            git pull origin master
+            git fetch origin
+            git checkout master || git checkout -b master origin/master
+            git reset --hard origin/master
             cd ..
 
+            # Rebuild all containers
             docker compose up -d --build
+
+            # Optional: clean dangling images
+            docker image prune -af
