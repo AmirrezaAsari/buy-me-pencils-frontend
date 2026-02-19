@@ -20,7 +20,7 @@ export default function AmountSelector({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 justify-items-center">
         {PRESET_AMOUNTS_IRT.map((amount) => (
           <button
             key={amount}
@@ -30,7 +30,7 @@ export default function AmountSelector({
               onSelect(amount);
             }}
             className={clsx(
-              'amount-btn-xl text-left sm:text-center',
+              'amount-btn-xl text-center w-full max-w-[10rem]',
               selected === amount && 'amount-btn-selected'
             )}
           >

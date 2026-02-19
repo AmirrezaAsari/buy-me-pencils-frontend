@@ -60,24 +60,24 @@ export default function DonationModal({
         className="modal-panel-xl relative w-full max-w-[28rem]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 sm:p-8">
-          <div className="accent-line-xl mb-6" />
+        <div className="p-6 sm:p-8 flex flex-col items-center text-center gap-6">
+          <div className="accent-line-xl mx-auto" />
 
           <h2
             id="donation-modal-title"
-            className="font-display text-2xl sm:text-3xl font-bold text-[#1a1a1a] tracking-tight mb-1"
+            className="font-display text-2xl sm:text-3xl font-bold text-[#1a1a1a] tracking-tight"
           >
             Choose amount
           </h2>
-          <p className="text-[#6b7280] text-base mb-6">
+          <p className="text-[#6b7280] text-base">
             Pick a preset or enter a custom amount (IRT).
           </p>
 
-          <div className="max-w-[22rem]">
+          <div className="max-w-[22rem] w-full">
             <AmountSelector selected={amount} onSelect={setAmount} />
           </div>
 
-          <div className="mt-6 space-y-4 max-w-[22rem]">
+          <div className="space-y-5 max-w-[22rem] w-full">
             <div>
               <label htmlFor="userName" className="sr-only">
                 Your name
@@ -108,12 +108,12 @@ export default function DonationModal({
           </div>
 
           {error && (
-            <p className="mt-4 text-sm text-[#c17f59] font-medium max-w-[22rem]" role="alert">
+            <p className="text-sm text-[#c17f59] font-medium max-w-[22rem] mx-auto" role="alert">
               {error}
             </p>
           )}
 
-          <div className="mt-8 flex flex-col-reverse sm:flex-row gap-3 justify-end max-w-[22rem]">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 justify-center max-w-[22rem] w-full">
             <Button variant="outline" onClick={handleClose} className="btn-modal-outline-xl">
               Cancel
             </Button>
