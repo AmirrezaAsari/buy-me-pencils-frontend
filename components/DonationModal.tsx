@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { createPay } from '../lib/api';
 import AmountSelector from './AmountSelector';
 import Button from './Button';
@@ -46,18 +47,17 @@ export default function DonationModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
-  return (
+  const modalContent = (
     <div
-      className="modal-backdrop-rich fixed inset-0 z-50 flex items-center justify-center animate-fade-in p-4 sm:p-6 min-h-screen"
+      className="modal-backdrop-rich z-50 p-4 sm:p-6"
+      style={{ width: '100vw', height: '100vh' }}
       onClick={handleClose}
       role="dialog"
       aria-modal
       aria-labelledby="donation-modal-title"
     >
       <div
-        className="modal-panel-xl relative w-full max-w-lg overflow-hidden mx-auto my-auto"
+        className="modal-panel-xl relative w-full max-w-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 sm:p-8">
@@ -126,4 +126,9 @@ export default function DonationModal({
       </div>
     </div>
   );
+
+  if (!isOpen) return null;
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
 }

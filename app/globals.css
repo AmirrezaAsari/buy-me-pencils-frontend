@@ -75,10 +75,16 @@
   transform: translateY(0);
 }
 
-/* ---- Modal: clean white panel ---- */
+/* ---- Modal: no backdrop, centered in viewport ---- */
 .modal-backdrop-rich {
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
+  background: transparent;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-panel-xl {
@@ -86,6 +92,9 @@
   border-radius: 1.25rem;
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04);
   animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  /* keep panel from growing past viewport */
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
 }
 
 /* Accent bar (small brand strip) */
