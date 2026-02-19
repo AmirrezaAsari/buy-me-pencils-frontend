@@ -15,12 +15,12 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#c17f59] text-white hover:bg-[#a86b48] active:bg-[#8f5a3d] disabled:bg-[#c17f59]/50 disabled:cursor-not-allowed',
+    'bg-[#c17f59] text-white hover:bg-[#b06d47] active:bg-[#9d6340] disabled:bg-[#c17f59]/50 disabled:cursor-not-allowed',
   secondary:
-    'bg-[#2c2c2c] text-white hover:bg-[#1a1a1a] active:bg-[#0d0d0d] disabled:bg-[#2c2c2c]/50 disabled:cursor-not-allowed',
+    'bg-[#1a1a1a] text-white hover:bg-[#374151] active:bg-[#111827] disabled:bg-[#1a1a1a]/50 disabled:cursor-not-allowed',
   outline:
-    'border border-[#2c2c2c]/20 text-[#2c2c2c] hover:bg-[#f0ebe3] active:bg-[#e8e4dc] disabled:text-[#8a8a8a] disabled:border-[#e8e4dc]',
-  ghost: 'text-[#2c2c2c] hover:bg-[#f0ebe3] active:bg-[#e8e4dc] disabled:text-[#8a8a8a]',
+    'border border-[#e5e7eb] bg-white text-[#374151] hover:bg-[#f9fafb] hover:border-[#d1d5db] active:bg-[#f3f4f6] disabled:text-[#9ca3af] disabled:border-[#e5e7eb]',
+  ghost: 'text-[#374151] hover:bg-[#f3f4f6] active:bg-[#e5e7eb] disabled:text-[#9ca3af]',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -46,7 +46,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={clsx(
-        'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#c17f59]/40 focus:ring-offset-2 focus:ring-offset-[#faf8f5]',
+        'inline-flex items-center justify-center gap-2 rounded-[0.75rem] font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#c17f59]/30 focus:ring-offset-2 focus:ring-offset-[#faf9f7]',
         variantStyles[variant],
         sizeStyles[size],
         fullWidth && 'w-full',

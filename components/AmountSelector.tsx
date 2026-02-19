@@ -19,8 +19,8 @@ export default function AmountSelector({
   const [customAmount, setCustomAmount] = useState('');
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {PRESET_AMOUNTS_IRT.map((amount) => (
           <button
             key={amount}
@@ -30,7 +30,7 @@ export default function AmountSelector({
               onSelect(amount);
             }}
             className={clsx(
-              'amount-btn-xl text-[#2c2c2c]',
+              'amount-btn-xl text-left sm:text-center',
               selected === amount && 'amount-btn-selected'
             )}
           >
@@ -39,7 +39,7 @@ export default function AmountSelector({
         ))}
       </div>
 
-      <div className="relative">
+      <div>
         <input
           type="number"
           placeholder="Custom amount (IRT)"
@@ -49,7 +49,7 @@ export default function AmountSelector({
             setCustomAmount(val);
             onSelect(Number(val) || 0);
           }}
-          className="input-rich-xl w-full px-5 text-[#2c2c2c] placeholder:text-[#8a8a8a] focus:outline-none"
+          className="input-rich-xl w-full text-[#1a1a1a] placeholder:text-[#9ca3af] focus:outline-none"
           min="1"
         />
       </div>
