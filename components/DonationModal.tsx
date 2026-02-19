@@ -57,7 +57,7 @@ export default function DonationModal({
       aria-labelledby="donation-modal-title"
     >
       <div
-        className="modal-panel-xl relative w-full max-w-lg"
+        className="modal-panel-xl relative w-full max-w-[28rem]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 sm:p-8">
@@ -73,9 +73,11 @@ export default function DonationModal({
             Pick a preset or enter a custom amount (IRT).
           </p>
 
-          <AmountSelector selected={amount} onSelect={setAmount} />
+          <div className="max-w-[22rem]">
+            <AmountSelector selected={amount} onSelect={setAmount} />
+          </div>
 
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 space-y-4 max-w-[22rem]">
             <div>
               <label htmlFor="userName" className="sr-only">
                 Your name
@@ -105,12 +107,12 @@ export default function DonationModal({
           </div>
 
           {error && (
-            <p className="mt-4 text-sm text-[#c17f59] font-medium" role="alert">
+            <p className="mt-4 text-sm text-[#c17f59] font-medium max-w-[22rem]" role="alert">
               {error}
             </p>
           )}
 
-          <div className="mt-8 flex flex-col-reverse sm:flex-row gap-3 justify-end">
+          <div className="mt-8 flex flex-col-reverse sm:flex-row gap-3 justify-end max-w-[22rem]">
             <Button variant="outline" onClick={handleClose} className="btn-modal-outline-xl">
               Cancel
             </Button>
