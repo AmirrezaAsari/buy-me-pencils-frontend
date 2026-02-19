@@ -55,5 +55,5 @@ jobs:
 
             # Rebuild frontend container
               docker-compose build frontend
-              docker-compose down
+              docker-compose down frontend
               docker-compose up -d frontend
