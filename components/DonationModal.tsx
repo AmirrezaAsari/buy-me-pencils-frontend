@@ -71,6 +71,7 @@ export default function DonationModal({
           </h2>
           <p className="text-[#6b7280] text-base">
             Pick a preset or enter a custom amount (IRT).
+            (you will be redirected to another website to donate.)
           </p>
 
           <div className="max-w-[22rem] w-full">
