@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import Button from '../../components/Button';
 import DonationModal from '../../components/DonationModal';
 import TypingText from '../../components/TypingText';
@@ -15,8 +16,8 @@ export default function Home() {
     <main className="min-h-screen flex flex-col">
       {/* Header: brand + subtle emphasis */}
       <header className="w-full border-b border-black/[0.06] bg-white/90 backdrop-blur-md sticky top-0 z-40 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-center sm:justify-start">
-          <a
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link
             href="/home"
             className="inline-flex items-center gap-2.5 text-[#1a1a1a] no-underline hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#c17f59]/30 focus:ring-offset-2 focus:ring-offset-white rounded-lg"
           >
@@ -40,7 +41,13 @@ export default function Home() {
             <span className="font-display font-semibold text-lg tracking-tight">
               Buy me a pencil
             </span>
-          </a>
+          </Link>
+          <Link
+            href="/user"
+            className="font-display font-medium text-[#1a1a1a] text-[15px] py-2 px-4 rounded-lg border border-[#e5e7eb] bg-white hover:bg-[#faf9f7] hover:border-[#d1d5db] transition-colors focus:outline-none focus:ring-2 focus:ring-[#c17f59]/30 focus:ring-offset-2"
+          >
+            Sign in
+          </Link>
         </div>
       </header>
 
