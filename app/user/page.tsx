@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Button from '../../components/Button';
@@ -12,9 +12,8 @@ import {
   fetchAuthMe,
 } from '../../lib/api';
 import type { AuthMeResponse } from '../../lib/api';
-import React from 'react';
 
-export default function UserPage() {
+function UserPageContent() {
   const searchParams = useSearchParams();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<AuthMeResponse | null>(null);
@@ -198,5 +197,21 @@ export default function UserPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function UserPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="flex-1 flex flex-col justify-center items-center px-6 py-16">
+          <div className="hero-card w-full max-w-md px-8 py-12 text-center">
+            <p className="text-[#6b7280] font-sans">Loading…</p>
+          </div>
+        </section>
+      }
+    >
+      <UserPageContent />
+    </Suspense>
   );
 }
