@@ -14,6 +14,16 @@ export function getApiBaseUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 }
 
+/** App origin for donation links (no trailing slash). */
+export function getAppBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    const env = process.env.NEXT_PUBLIC_APP_URL;
+    if (env) return env.replace(/\/$/, '');
+    return window.location.origin;
+  }
+  return process.env.NEXT_PUBLIC_APP_URL || 'https://buymeapencil.ir';
+}
+
 export interface SignInResponse {
   accessToken: string;
 }
@@ -204,6 +214,50 @@ export async function getMyCryptoPayments(
     throw new Error(msg);
   }
   return data as CryptoPaymentResponse[];
+}
+
+/** Public: get creator name by userId (no auth). */
+export async function getPublicUser(
+  userId: string
+): Promise<{ name: string }> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/users/public/${userId}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 404) throw new Error('User not found');
+    const msg =
+      (data as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as { name: string };
+}
+
+export interface CreateCryptoPaymentResponse {
+  paymentId: string;
+  address: string;
+  amountCrypto: string;
+  currency: string;
+  expiresAt: string;
+}
+
+/** Create crypto donation invoice (public, no auth). */
+export async function createCryptoPayment(
+  creatorId: string,
+  amountUSD: number
+): Promise<CreateCryptoPaymentResponse> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/payments/crypto`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ creatorId, amountUSD }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as CreateCryptoPaymentResponse;
 }
 
 export async function signIn(
