@@ -9,6 +9,7 @@ import {
   getStoredToken,
   fetchAuthMe,
   updateProfile,
+  getAppBaseUrl,
 } from '../../../lib/api';
 import type { AuthMeResponse } from '../../../lib/api';
 
@@ -20,6 +21,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [copyDone, setCopyDone] = useState(false);
 
   const loadUser = useCallback(() => {
     const token = getStoredToken();
@@ -70,6 +72,18 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
+  const donationLink = `${getAppBaseUrl()}/donate/${user.id}`;
+
+  const handleCopyDonationLink = async () => {
+    try {
+      await navigator.clipboard.writeText(donationLink);
+      setCopyDone(true);
+      setTimeout(() => setCopyDone(false), 2000);
+    } catch {
+      setError('Could not copy to clipboard');
+    }
+  };
+
   return (
     <UserPanelLayout>
       <div className="hero-card w-full max-w-lg px-8 py-10 sm:px-10 sm:py-12">
@@ -77,6 +91,29 @@ export default function ProfilePage() {
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#1a1a1a] tracking-tight mb-2">
           Profile
         </h1>
+
+        <div className="mb-8 p-5 rounded-xl bg-[#faf9f7] border border-[#e5e7eb]">
+          <h2 className="font-display text-sm font-semibold uppercase tracking-wider text-[#6b7280] mb-3">
+            My Donation Link
+          </h2>
+          <p className="text-[#4b5563] text-sm mb-3">
+            Share this link so others can send you USDT donations.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <code className="flex-1 min-w-0 text-sm text-[#1a1a1a] bg-white px-3 py-2 rounded-lg border border-[#e5e7eb] truncate">
+              {donationLink}
+            </code>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCopyDonationLink}
+              className="btn-modal-outline-xl shrink-0"
+            >
+              {copyDone ? 'Copied!' : 'Copy'}
+            </Button>
+          </div>
+        </div>
+
         <div className="mb-6 p-4 rounded-xl bg-[#faf9f7] border border-[#e5e7eb]">
           <p className="text-[#6b7280] text-sm mb-0.5">USDT balance</p>
           <p className="font-display text-xl font-semibold text-[#1a1a1a]">
