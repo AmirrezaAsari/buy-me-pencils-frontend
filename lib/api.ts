@@ -14,72 +14,8 @@ export function getApiBaseUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 }
 
-const AUTH_TOKEN_KEY = 'accessToken';
-
-export function getStoredToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(AUTH_TOKEN_KEY);
-}
-
-export function setStoredToken(token: string): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(AUTH_TOKEN_KEY, token);
-}
-
-export function clearStoredToken(): void {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem(AUTH_TOKEN_KEY);
-}
-
 export interface SignInResponse {
   accessToken: string;
-}
-
-export async function signIn(
-  email: string,
-  password: string
-): Promise<SignInResponse> {
-  const baseUrl = getApiBaseUrl();
-  const res = await fetch(`${baseUrl}/auth/sign-in`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const msg =
-      (data as { message?: string }).message ??
-      (data as { error?: string }).error ??
-      `Sign in failed (${res.status})`;
-    throw new Error(msg);
-  }
-  const accessToken = (data as SignInResponse).accessToken;
-  if (!accessToken || typeof accessToken !== 'string') {
-    throw new Error('Invalid response: missing accessToken');
-  }
-  return { accessToken };
-}
-
-export interface AuthMeResponse {
-  id: string;
-  email: string;
-  name: string;
-  type: string;
-}
-
-export async function fetchAuthMe(token: string): Promise<AuthMeResponse> {
-  const baseUrl = getApiBaseUrl();
-  const res = await fetch(`${baseUrl}/auth/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const msg =
-      (data as { message?: string }).message ??
-      `Request failed (${res.status})`;
-    throw new Error(msg);
-  }
-  return data as AuthMeResponse;
 }
 
 // Sign-up (OTP)
