@@ -119,7 +119,6 @@ function UserPageContent() {
             </Button>
           </div>
         </section>
-      </UserPanelLayout>
     );
   }
 
