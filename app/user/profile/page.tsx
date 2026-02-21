@@ -176,7 +176,7 @@ export default function ProfilePage() {
             href="/user/forgot-password"
             className="text-[#c17f59] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#c17f59]/30 focus:ring-offset-2 rounded"
           >
-            Use forgot-password flow →
+            Forgot password?
           </Link>
         </div>
       </div>
