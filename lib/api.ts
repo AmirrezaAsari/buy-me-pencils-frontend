@@ -219,6 +219,68 @@ export async function createPay(
   return { checkoutUrl: url };
 }
 
+// --- Auth (token storage + sign-in + me) ---
+const AUTH_TOKEN_KEY = 'auth_token';
+
+export function getStoredToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
+export function setStoredToken(token: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+export function clearStoredToken(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+}
+
+export interface AuthMeResponse {
+  id: string;
+  email: string;
+  name: string;
+  type: string;
+}
+
+export async function signIn(
+  email: string,
+  password: string
+): Promise<{ accessToken: string }> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/auth/sign-in`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  const accessToken = (data as { accessToken?: string }).accessToken;
+  if (!accessToken || typeof accessToken !== 'string') {
+    throw new Error('Invalid response: missing accessToken');
+  }
+  return { accessToken };
+}
+
+export async function fetchAuthMe(token: string): Promise<AuthMeResponse> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (body as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return body as AuthMeResponse;
+}
+
 // --- Profile (authenticated) ---
 export async function updateProfile(
   token: string,

@@ -33,7 +33,7 @@ function UserPageContent() {
       return;
     }
     fetchAuthMe(stored)
-      .then((me) => {
+      .then((me: AuthMeResponse) => {
         setUser(me);
       })
       .catch(() => {

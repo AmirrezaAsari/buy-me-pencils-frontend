@@ -2,7 +2,7 @@
 FROM node:20-slim AS builder
 WORKDIR /app
 
-ARG NEXT_PUBLIC_API_URL=http://localhost:3002
+ARG NEXT_PUBLIC_API_URL=https://buymeapencil.ir/api
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 COPY package.json package-lock.json* ./
