@@ -10,16 +10,20 @@ import {
   getCardInfo,
   createCardInfo,
   updateCardInfo,
+  getMyCryptoPayments,
 } from '../../../lib/api';
-import type { CardInfoResponse } from '../../../lib/api';
+import type { CardInfoResponse, CryptoPaymentResponse } from '../../../lib/api';
 
 type TabId = 'payments' | 'payment-info';
 
 export default function PaymentsPage() {
   const router = useRouter();
-  const [tab, setTab] = useState<TabId>('payment-info');
+  const [tab, setTab] = useState<TabId>('payments');
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [token, setToken] = useState<string | null>(null);
+
+  const [cryptoPayments, setCryptoPayments] = useState<CryptoPaymentResponse[]>([]);
+  const [paymentsLoading, setPaymentsLoading] = useState(false);
 
   const [cardList, setCardList] = useState<CardInfoResponse[]>([]);
   const [cardNumber, setCardNumber] = useState('');
@@ -42,6 +46,19 @@ export default function PaymentsPage() {
   useEffect(() => {
     loadAuth();
   }, [loadAuth]);
+
+  const loadCryptoPayments = useCallback(() => {
+    if (!token) return;
+    setPaymentsLoading(true);
+    getMyCryptoPayments(token)
+      .then(setCryptoPayments)
+      .catch(() => setCryptoPayments([]))
+      .finally(() => setPaymentsLoading(false));
+  }, [token]);
+
+  useEffect(() => {
+    if (token && !checkingAuth) loadCryptoPayments();
+  }, [token, checkingAuth, loadCryptoPayments]);
 
   const loadCardInfo = useCallback(() => {
     if (!token) return;
@@ -149,8 +166,62 @@ export default function PaymentsPage() {
 
         <div className="p-6 sm:p-8">
           {tab === 'payments' && (
-            <div className="py-8 text-center text-[#6b7280]">
-              <p>Payments history and actions will appear here. (Coming later.)</p>
+            <div>
+              <div className="accent-line-xl mb-6" />
+              <h2 className="font-display text-xl font-semibold text-[#1a1a1a] mb-1">
+                Confirmed payments
+              </h2>
+              <p className="text-[#6b7280] text-sm mb-6">
+                USDT donations you&apos;ve received (crypto only).
+              </p>
+              {paymentsLoading ? (
+                <div className="py-12 text-center text-[#6b7280]">
+                  <p>Loading payments…</p>
+                </div>
+              ) : cryptoPayments.length === 0 ? (
+                <div className="hero-card py-12 px-6 text-center border border-[#e5e7eb] border-dashed rounded-xl bg-[#faf9f7]">
+                  <p className="text-[#6b7280]">No confirmed payments yet.</p>
+                  <p className="text-[#9ca3af] text-sm mt-1">
+                    Donations will appear here once they&apos;re confirmed on-chain.
+                  </p>
+                </div>
+              ) : (
+                <ul className="space-y-3">
+                  {cryptoPayments.map((p) => (
+                    <li
+                      key={p.id}
+                      className="hero-card flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5"
+                    >
+                      <div>
+                        <p className="font-display font-semibold text-[#1a1a1a]">
+                          {p.amount.toFixed(2)} {p.currency}
+                        </p>
+                        <p className="text-[#6b7280] text-sm mt-0.5">
+                          {new Date(p.createdAt).toLocaleDateString(undefined, {
+                            dateStyle: 'medium',
+                            timeStyle: 'short',
+                          })}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-[#059669]/12 text-[#059669]">
+                          Confirmed
+                        </span>
+                        {p.txHash && (
+                          <a
+                            href={`https://tronscan.org/#/transaction/${p.txHash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#c17f59] text-sm font-medium hover:underline"
+                          >
+                            View on TronScan →
+                          </a>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
 

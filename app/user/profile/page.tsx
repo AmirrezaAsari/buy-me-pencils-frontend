@@ -77,6 +77,12 @@ export default function ProfilePage() {
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#1a1a1a] tracking-tight mb-2">
           Profile
         </h1>
+        <div className="mb-6 p-4 rounded-xl bg-[#faf9f7] border border-[#e5e7eb]">
+          <p className="text-[#6b7280] text-sm mb-0.5">USDT balance</p>
+          <p className="font-display text-xl font-semibold text-[#1a1a1a]">
+            {parseFloat(user.cryptoBalance || '0').toFixed(2)} USDT
+          </p>
+        </div>
         <p className="text-[#6b7280] text-base mb-8">
           Edit your name or change your password.
         </p>

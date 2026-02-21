@@ -2,7 +2,7 @@
 
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Button from '../../components/Button';
 import UserPanelLayout from '../../components/UserPanelLayout';
 import {
@@ -16,6 +16,7 @@ import type { AuthMeResponse } from '../../lib/api';
 
 function UserPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<AuthMeResponse | null>(null);
   const [email, setEmail] = useState('');
@@ -35,6 +36,7 @@ function UserPageContent() {
     fetchAuthMe(stored)
       .then((me: AuthMeResponse) => {
         setUser(me);
+        router.replace('/user/profile');
       })
       .catch(() => {
         clearStoredToken();
@@ -44,7 +46,7 @@ function UserPageContent() {
       .finally(() => {
         setCheckingAuth(false);
       });
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     loadAuth();
@@ -71,6 +73,7 @@ function UserPageContent() {
       setToken(accessToken);
       const me = await fetchAuthMe(accessToken);
       setUser(me);
+      router.replace('/user/profile');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed. Please try again.');
     } finally {
@@ -97,27 +100,8 @@ function UserPageContent() {
   if (token && user) {
     return (
       <UserPanelLayout>
-        <section className="flex-1">
-          <div className="hero-card w-full max-w-xl px-8 py-12 sm:px-12 sm:py-16">
-            <div className="accent-line-xl mb-6" />
-            <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1a1a1a] tracking-tight mb-2">
-              Welcome back
-            </h1>
-            <p className="text-[#4b5563] text-lg mb-8">
-              Signed in as <span className="font-medium text-[#1a1a1a]">{user.email}</span>
-            </p>
-            <p className="text-[#6b7280] text-base mb-10">
-              Use the menu on the left to manage your profile and payment info.
-            </p>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={handleSignOut}
-              className="btn-modal-outline-xl"
-            >
-              Sign out
-            </Button>
-          </div>
+        <section className="flex-1 flex justify-center items-center min-h-[200px]">
+          <p className="text-[#6b7280] font-sans">Redirecting…</p>
         </section>
       </UserPanelLayout>
     );

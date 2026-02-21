@@ -178,6 +178,32 @@ export interface AuthMeResponse {
   email: string;
   name: string;
   type: string;
+  cryptoBalance?: string;
+}
+
+export interface CryptoPaymentResponse {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  txHash: string | null;
+  createdAt: string;
+}
+
+export async function getMyCryptoPayments(
+  token: string
+): Promise<CryptoPaymentResponse[]> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/payments/crypto/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as CryptoPaymentResponse[];
 }
 
 export async function signIn(
