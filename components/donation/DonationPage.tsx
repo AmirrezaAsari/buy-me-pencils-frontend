@@ -29,13 +29,6 @@ export default function DonationPage({ creatorId, creatorName }: DonationPagePro
           Send a donation to support this creator.
         </p>
 
-        <div className="max-w-sm mx-auto mb-6">
-          <p className="text-sm font-medium text-[#4b5563] mb-3 text-left">
-            Suggested amount (USD)
-          </p>
-          <SuggestedAmounts selected={selectedAmount} onSelect={setSelectedAmount} />
-        </div>
-
         <Button
           onClick={handleDonateClick}
           className="btn-cta-xl w-full max-w-sm"
