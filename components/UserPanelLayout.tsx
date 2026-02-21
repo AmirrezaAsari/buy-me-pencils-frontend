@@ -32,8 +32,7 @@ export default function UserPanelLayout({ children }: UserPanelLayoutProps) {
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 gap-10">
-      <aside className="w-80 shrink-0">
+      <div className="flex flex-1 w-full max-w-7xl mx-auto px-6 py-10 gap-16">      <aside className="w-96 shrink-0">
         <nav
           className="hero-card sticky top-24 overflow-hidden flex flex-col p-0"
           aria-label="User panel"
@@ -72,7 +71,11 @@ export default function UserPanelLayout({ children }: UserPanelLayoutProps) {
           </div>
         </nav>
       </aside>
-      <main className="flex-1 min-w-0">{children}</main>
+      <main className="flex-1 min-w-0">
+        <div className="bg-white rounded-2xl shadow-sm p-10">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

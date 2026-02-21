@@ -9,6 +9,14 @@ import Button from './Button';
 
 const USDT_DECIMALS = 1e6;
 
+type CryptoSuccess = {
+  address: string;
+  amountCrypto: string;
+  currency: string;
+  network: string;
+  expiresAt: string;
+};
+
 export default function DonationModal({
   isOpen,
   onClose,
@@ -27,18 +35,34 @@ export default function DonationModal({
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [cryptoSuccess, setCryptoSuccess] = useState<{
-    address: string;
-    amountCrypto: string;
-    currency: string;
-  } | null>(null);
+  const [cryptoSuccess, setCryptoSuccess] = useState<CryptoSuccess | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setAmount(defaultAmountUSD ?? null);
       setCryptoSuccess(null);
+      setQrDataUrl(null);
     }
   }, [isOpen, defaultAmountUSD]);
+
+  useEffect(() => {
+    if (!cryptoSuccess?.address) {
+      setQrDataUrl(null);
+      return;
+    }
+    let cancelled = false;
+    import('qrcode').then((QRCode) => {
+      QRCode.toDataURL(cryptoSuccess!.address, { width: 220, margin: 2 }).then(
+        (url) => {
+          if (!cancelled) setQrDataUrl(url);
+        }
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [cryptoSuccess?.address]);
 
   const handlePayment = async () => {
     if (!amount || amount <= 0) {
@@ -55,6 +79,8 @@ export default function DonationModal({
           address: res.address,
           amountCrypto: res.amountCrypto,
           currency: res.currency,
+          network: res.network,
+          expiresAt: res.expiresAt,
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
@@ -122,20 +148,45 @@ export default function DonationModal({
                 id="donation-modal-title"
                 className="font-display text-2xl sm:text-3xl font-bold text-[#1a1a1a] tracking-tight"
               >
-                Send USDT
+                Send payment
               </h2>
               <p className="text-[#6b7280] text-base">
-                Send {amountUsdtDisplay} {cryptoSuccess.currency} to this TRON (TRC20) address. Payment will be confirmed on-chain.
+                Scan the QR code or copy the address. Send exactly {amountUsdtDisplay} {cryptoSuccess.currency} on {cryptoSuccess.network}. Payment will be confirmed on-chain.
               </p>
-              <div className="max-w-[22rem] w-full text-left space-y-2">
-                <p className="text-sm font-medium text-[#4b5563]">Amount</p>
-                <p className="font-mono text-lg font-semibold text-[#1a1a1a]">
-                  {amountUsdtDisplay} {cryptoSuccess.currency}
-                </p>
-                <p className="text-sm font-medium text-[#4b5563] mt-3">Address (TRC20)</p>
-                <code className="block break-all text-sm text-[#1a1a1a] bg-[#f9fafb] px-3 py-2 rounded-lg border border-[#e5e7eb]">
-                  {cryptoSuccess.address}
-                </code>
+
+              {qrDataUrl && (
+                <div className="flex justify-center">
+                  <img
+                    src={qrDataUrl}
+                    alt="Payment address QR code"
+                    width={220}
+                    height={220}
+                    className="rounded-xl border border-[#e5e7eb] bg-white"
+                  />
+                </div>
+              )}
+
+              <div className="max-w-[22rem] w-full text-left space-y-4 rounded-xl bg-[#faf9f7] border border-[#e5e7eb] p-4">
+                <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+                  <span className="text-[#6b7280] font-medium">Network</span>
+                  <span className="font-semibold text-[#1a1a1a]">{cryptoSuccess.network}</span>
+                  <span className="text-[#6b7280] font-medium">Currency</span>
+                  <span className="font-semibold text-[#1a1a1a]">{cryptoSuccess.currency}</span>
+                  <span className="text-[#6b7280] font-medium">Amount</span>
+                  <span className="font-mono font-semibold text-[#1a1a1a]">
+                    {amountUsdtDisplay} {cryptoSuccess.currency}
+                  </span>
+                  <span className="text-[#6b7280] font-medium">Expires</span>
+                  <span className="text-[#1a1a1a]">
+                    {new Date(cryptoSuccess.expiresAt).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-[#6b7280] font-medium text-sm mb-1">Deposit address</p>
+                  <code className="block break-all text-sm text-[#1a1a1a] bg-white px-3 py-2 rounded-lg border border-[#e5e7eb]">
+                    {cryptoSuccess.address}
+                  </code>
+                </div>
                 <Button
                   type="button"
                   variant="outline"

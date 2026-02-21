@@ -237,6 +237,7 @@ export interface CreateCryptoPaymentResponse {
   address: string;
   amountCrypto: string;
   currency: string;
+  network: string;
   expiresAt: string;
 }
 
