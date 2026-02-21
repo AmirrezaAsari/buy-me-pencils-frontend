@@ -4,6 +4,7 @@ import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Button from '../../components/Button';
+import UserPanelLayout from '../../components/UserPanelLayout';
 import {
   getStoredToken,
   setStoredToken,
@@ -95,28 +96,29 @@ function UserPageContent() {
 
   if (token && user) {
     return (
-      <section className="flex-1 flex flex-col justify-center items-center px-6 py-16 sm:py-24">
-        <div className="hero-card w-full max-w-xl px-8 py-12 sm:px-12 sm:py-16 text-center">
-          <div className="accent-line-xl mx-auto mb-6" />
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1a1a1a] tracking-tight mb-2">
-            Welcome back
-          </h1>
-          <p className="text-[#4b5563] text-lg mb-8">
-            Signed in as <span className="font-medium text-[#1a1a1a]">{user.email}</span>
-          </p>
-          <p className="text-[#6b7280] text-base mb-10">
-            This is your user panel. More features will be available here soon.
-          </p>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={handleSignOut}
-            className="btn-modal-outline-xl"
-          >
-            Sign out
-          </Button>
-        </div>
-      </section>
+      <UserPanelLayout>
+        <section className="flex-1">
+          <div className="hero-card w-full max-w-xl px-8 py-12 sm:px-12 sm:py-16">
+            <div className="accent-line-xl mb-6" />
+            <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1a1a1a] tracking-tight mb-2">
+              Welcome back
+            </h1>
+            <p className="text-[#4b5563] text-lg mb-8">
+              Signed in as <span className="font-medium text-[#1a1a1a]">{user.email}</span>
+            </p>
+            <p className="text-[#6b7280] text-base mb-10">
+              Use the menu on the left to manage your profile and payment info.
+            </p>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleSignOut}
+              className="btn-modal-outline-xl"
+            >
+              Sign out
+            </Button>
+          </div>
+        </section>
     );
   }
 
