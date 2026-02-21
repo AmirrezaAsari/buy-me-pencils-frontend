@@ -11,7 +11,7 @@ function getApiBaseUrl(): string {
     return `${protocol}//${hostname}:3002`;
   }
   // SSR: use env or default
-  return process.env.NEXT_PUBLIC_API_URL || 'http://buymeapencil.ir/api';
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 }
 
 export interface PayResponse {
@@ -60,4 +60,96 @@ export async function createPay(
   }
 
   return { checkoutUrl: url };
+}
+
+// --- Profile (authenticated) ---
+export async function updateProfile(
+  token: string,
+  data: { name?: string; password?: string }
+): Promise<AuthMeResponse> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/auth/profile`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (body as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return body as AuthMeResponse;
+}
+
+// --- Card info (authenticated) ---
+export interface CardInfoResponse {
+  id: string;
+  cardNumber: string;
+  holderName: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function getCardInfo(token: string): Promise<CardInfoResponse[]> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/card-info`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as CardInfoResponse[];
+}
+
+export async function createCardInfo(
+  token: string,
+  data: { cardNumber: string; holderName: string }
+): Promise<CardInfoResponse> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/card-info`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (body as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return body as CardInfoResponse;
+}
+
+export async function updateCardInfo(
+  token: string,
+  id: string,
+  data: { cardNumber?: string; holderName?: string }
+): Promise<CardInfoResponse> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/card-info/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (body as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return body as CardInfoResponse;
 }
