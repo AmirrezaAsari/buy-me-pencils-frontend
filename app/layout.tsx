@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import './globals.css';
+import AppProviders from '../components/providers/AppProviders';
 
 export const metadata = {
   title: 'Buy me a pencil',
@@ -22,7 +23,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         />
       </head>
       <body className="min-h-screen bg-[#faf9f7] text-[#1a1a1a] antialiased font-sans">
-        {children}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );
