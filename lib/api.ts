@@ -453,3 +453,65 @@ export async function createWithdrawal(
   }
   return data as WithdrawalResponse;
 }
+
+// --- Admin withdrawals (admin only) ---
+export interface AdminWithdrawalResponse extends WithdrawalResponse {
+  userId?: string;
+  user?: { id: string; name: string; email: string };
+}
+
+export async function getAdminWithdrawals(
+  token: string
+): Promise<AdminWithdrawalResponse[]> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/admin/withdrawals`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as AdminWithdrawalResponse[];
+}
+
+export async function approveWithdrawal(
+  token: string,
+  withdrawalId: string
+): Promise<{ id: string; status: string; message: string }> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/admin/withdrawals/${withdrawalId}/approve`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ??
+      (data as { error?: string }).error ??
+      `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as { id: string; status: string; message: string };
+}
+
+export async function rejectWithdrawal(
+  token: string,
+  withdrawalId: string
+): Promise<{ id: string; status: string; message: string }> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/admin/withdrawals/${withdrawalId}/reject`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ??
+      (data as { error?: string }).error ??
+      `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as { id: string; status: string; message: string };
+}

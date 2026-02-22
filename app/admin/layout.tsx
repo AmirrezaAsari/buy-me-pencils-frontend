@@ -1,8 +1,7 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
-import AdminNavLink from '../../components/AdminNavLink';
 
-export default function UserLayout({ children }: { children: ReactNode }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <main className="min-h-screen flex flex-col bg-[#faf9f7]">
       <header className="w-full border-b border-black/[0.06] bg-white/90 backdrop-blur-md sticky top-0 z-40 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]">
@@ -32,7 +31,20 @@ export default function UserLayout({ children }: { children: ReactNode }) {
               Buy me a pencil
             </span>
           </Link>
-          <AdminNavLink />
+          <nav className="flex items-center gap-4">
+            <Link
+              href="/admin/withdrawals"
+              className="text-sm font-medium text-[#6b7280] hover:text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#c17f59]/30 rounded px-2 py-1"
+            >
+              Withdrawals
+            </Link>
+            <Link
+              href="/user"
+              className="text-sm font-medium text-[#c17f59] hover:underline focus:outline-none focus:ring-2 focus:ring-[#c17f59]/30 rounded px-2 py-1"
+            >
+              My account
+            </Link>
+          </nav>
         </div>
       </header>
       {children}
