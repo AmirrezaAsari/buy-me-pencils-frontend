@@ -19,6 +19,11 @@ const icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2h-2m-4-1V7a2 2 0 012-2h2a2 2 0 012 2v1" />
     </svg>
   ),
+  withdrawals: (
+    <svg className="w-8 h-8 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2h-2m-4 1v8m-4-4v4m4-4v4m-8-4v4m4-4h4" />
+    </svg>
+  ),
 } as const;
 
 type IconKey = keyof typeof icons;
@@ -26,6 +31,7 @@ type IconKey = keyof typeof icons;
 const navItems: { href: string; label: string; icon: IconKey }[] = [
   { href: '/user/profile', label: 'Profile', icon: 'profile' },
   { href: '/user/payments', label: 'Payments', icon: 'payments' },
+  { href: '/user/withdrawals', label: 'Withdraw', icon: 'withdrawals' },
 ];
 
 export default function UserPanelLayout({ children }: UserPanelLayoutProps) {

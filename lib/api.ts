@@ -389,3 +389,67 @@ export async function updateCardInfo(
   }
   return body as CardInfoResponse;
 }
+
+// --- Withdrawals (authenticated) ---
+export type WithdrawalStatus =
+  | 'pending'
+  | 'processing'
+  | 'completed'
+  | 'failed'
+  | 'rejected';
+
+export interface WithdrawalResponse {
+  id: string;
+  amount: number;
+  walletAddress: string;
+  status: WithdrawalStatus;
+  txHash?: string;
+  failureReason?: string;
+  createdAt: string;
+  processedAt?: string;
+}
+
+export interface CreateWithdrawalPayload {
+  amount: number;
+  walletAddress: string;
+}
+
+export async function getMyWithdrawals(
+  token: string
+): Promise<WithdrawalResponse[]> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/withdrawals/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ?? `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as WithdrawalResponse[];
+}
+
+export async function createWithdrawal(
+  token: string,
+  payload: CreateWithdrawalPayload
+): Promise<WithdrawalResponse> {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/withdrawals`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { message?: string }).message ??
+      (data as { error?: string }).error ??
+      `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+  return data as WithdrawalResponse;
+}
